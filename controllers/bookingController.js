@@ -53,7 +53,7 @@ const createBookingCheckout = async (session) => {
   await Booking.create({ tour, user, price });
 };
 
-exports.getWebhookCheckout = (req, res, next) => {
+exports.getWebhookCheckout = catchAsync(async (req, res, next) => {
   const signature = req.headers['stripe-signature'];
 
   let event;
@@ -67,10 +67,10 @@ exports.getWebhookCheckout = (req, res, next) => {
     return res.status(400).send(`Webhook error: ${err.message}`);
   }
   if (event.type === 'checkout.session.completed')
-    createBookingCheckout(event.data.object);
+    await createBookingCheckout(event.data.object);
 
   res.status(200).json({ received: true });
-};
+});
 
 exports.getBooking = factory.getOne(Booking);
 exports.createBooking = factory.createOne(Booking);
