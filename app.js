@@ -8,6 +8,7 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
+const cors = require('cors');
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -33,6 +34,12 @@ app.set('views', path.join(__dirname, 'views'));
 //Used to use middlewares in the requests
 // A middleware defined this way applies to all the routes declared after this.
 // All the middlewares are executed in the order they are declared
+
+//Implemented CORS
+//GET POST
+app.use(cors());
+//PATCH DELETE PUT
+app.options('*', cors());
 
 // Serving static files
 app.use(express.static(path.join(__dirname, 'public')));
